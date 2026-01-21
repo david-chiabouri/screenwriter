@@ -1,0 +1,16 @@
+{
+  "name": "screenwriter",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@google/genai": "^1.37.0",
+    "linked-chain": "^1.0.2"
+  }
+}
