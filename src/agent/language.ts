@@ -1,12 +1,12 @@
 import { GenerateContentResponse, GoogleGenAI, ThinkingLevel } from "@google/genai";
 import { IFaculty, type IAbstractStateContainer, type IGoogleGenAI } from "./lib/primitive";
 import { Semantify, type AbstractSemanticState, type ISemanticState, type SemanticMetadata } from "./semantics/semantic-state";
-import { ThoughtSpeed } from "./thought";
-import type { BrainState, IGeminiBrainController } from "./brain";
+import { ThoughtEmbeddingModel, ThoughtSpeed } from "./thought";
+import type { BrainState, GoogleGenAIState, IGeminiBrainController } from "./brain";
 
 
 export type LanguageProcessContext = {
-    systemInstruction: string;
+    genai_state: GoogleGenAIState
 }
 
 
@@ -16,7 +16,7 @@ export type LanguageProcessContext = {
  * @param contents - The input contents (text, images, etc.) to be processed.
  * @returns A promise resolving to the GenAI response.
  */
-export type LanguageProcessCallable = (contents: any, context: LanguageProcessContext) => Promise<GenerateContentResponse>;
+export type LanguageProcessCallable = (contents: any, context: LanguageProcessContext, model_override?: string) => Promise<GenerateContentResponse>;
 
 
 export interface LanguageFaculty extends IFaculty {
@@ -72,7 +72,7 @@ export class Language extends IFaculty implements LanguageFaculty {
      */
     public async detailedDescriptionOfAbstractState(state: AbstractSemanticState, metadata?: SemanticMetadata): Promise<string> {
         const semantified_abstract_state = Semantify.abstractState(state, metadata);
-        const response = await this.process(semantified_abstract_state);
+        const response = await this.process(semantified_abstract_state, { genai_state: this.state.genai_state });
         if (!response.text) {
             console.error("No text generated from the model.");
             return "";
@@ -87,20 +87,30 @@ export class Language extends IFaculty implements LanguageFaculty {
      * @param contents - The input content for the model.
      * @returns The raw response from the Google GenAI model.
      */
-    public async process(contents: any): Promise<GenerateContentResponse> {
+    public async process(contents: any, context: LanguageProcessContext, model_override?: string): Promise<GenerateContentResponse> {
+        const model = model_override ?? this.state.genai_state.current_thinking_shape.thoughtSpeed ?? ThoughtSpeed.EXTREME;
         const response = await this.handle.models.generateContent({
             contents,
-            model: this.state.genai_state.current_thinking_shape.thinkingSpeed ?? ThoughtSpeed.THOUGHTFUL,
+            model: model,
             config: {
                 systemInstruction: this.state.genai_state.systemInstruction,
                 // Only include thinkingConfig if strictly enabled, to support non-thinking models (e.g. flash)
                 thinkingConfig: this.state.genai_state.current_thinking_shape.includeThoughts ? {
                     includeThoughts: this.state.genai_state.current_thinking_shape.includeThoughts,
-                    thinkingLevel: this.state.genai_state.current_thinking_shape.thinkingLevel as ThinkingLevel,
+                    thinkingLevel: this.state.genai_state.current_thinking_shape.thoughtClarity as ThinkingLevel,
                 } : undefined
             }
         });
         return response;
+    }
+
+    public async semanticEmbedding(contents: string[]) {
+        const response = await this.handle.models.embedContent({
+            contents: contents,
+            model: ThoughtEmbeddingModel.STANDARD,
+
+        });
+        return response.embeddings;
     }
 
 

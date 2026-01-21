@@ -28,24 +28,24 @@ describe("ThoughtShape Output Comparison", () => {
             {
                 name: "FAST (No Thinking)",
                 config: {
-                    thinkingSpeed: ThoughtSpeed.FAST,
-                    thinkingLevel: ThoughtClarity.THINKING_LEVEL_UNSPECIFIED,
+                    thoughtSpeed: ThoughtSpeed.FAST,
+                    thoughtClarity: ThoughtClarity.THINKING_LEVEL_UNSPECIFIED,
                     includeThoughts: false
                 }
             },
             {
                 name: "STANDARD (Impressionistic Thinking)",
                 config: {
-                    thinkingSpeed: ThoughtSpeed.STANDARD,
-                    thinkingLevel: ThoughtClarity.IMPRESSIONISTIC,
+                    thoughtSpeed: ThoughtSpeed.STANDARD,
+                    thoughtClarity: ThoughtClarity.IMPRESSIONISTIC,
                     includeThoughts: true
                 }
             },
             {
                 name: "THOUGHTFUL (Clear Thinking)",
                 config: {
-                    thinkingSpeed: ThoughtSpeed.THOUGHTFUL,
-                    thinkingLevel: ThoughtClarity.CLEAR,
+                    thoughtSpeed: ThoughtSpeed.THOUGHTFUL,
+                    thoughtClarity: ThoughtClarity.CLEAR,
                     includeThoughts: true
                 }
             }
@@ -58,8 +58,8 @@ describe("ThoughtShape Output Comparison", () => {
         for (const shape of shapes) {
             console.log(`\n------------------------------------------`);
             console.log(`RUNNING SHAPE: ${shape.name}`);
-            console.log(`Model: ${shape.config.thinkingSpeed}`);
-            console.log(`Thinking Level: ${shape.config.thinkingLevel}`);
+            console.log(`Model: ${shape.config.thoughtSpeed}`);
+            console.log(`Thinking Level: ${shape.config.thoughtClarity}`);
             console.log(`Include Thoughts: ${shape.config.includeThoughts}`);
             console.log(`------------------------------------------`);
 

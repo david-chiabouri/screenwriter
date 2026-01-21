@@ -3,6 +3,7 @@ import { Language } from "./language";
 import { Thought, ThoughtSpeed, type ThoughtClarity, type ThoughtShape } from "./thought";
 import { SemanticStateFactory, type IContexedSemanticData, type ISemanticGoal, type ISemanticMetaGoal, type ISemanticState } from "./semantics/semantic-state";
 import type { IGoogleGenAI } from "./lib/primitive";
+import { Memory, type MemoryInitialState } from "./memory";
 
 
 
@@ -12,8 +13,8 @@ import type { IGoogleGenAI } from "./lib/primitive";
 
 export type GoogleGenAIState = {
     current_thinking_shape: {
-        thinkingSpeed: ThoughtSpeed,
-        thinkingLevel: ThoughtClarity,
+        thoughtSpeed: ThoughtSpeed,
+        thoughtClarity: ThoughtClarity,
         includeThoughts?: boolean,
     },
     systemInstruction: string,
@@ -85,6 +86,7 @@ export class Brain implements IGeminiBrainController {
 
     protected language_faculties: Language;
     protected thought_faculties: Thought;
+    protected memory_faculties: Memory;
 
     /**
      * Generates the initial placeholder plan for the agent.
@@ -130,9 +132,16 @@ export class Brain implements IGeminiBrainController {
 
         this.language_faculties = new Language(instance_handle);
         this.thought_faculties = new Thought({
-            language_callable: this.language_faculties.process,
+            language_callable: this.language_faculties.process.bind(this.language_faculties),
             brain_state: this.state,
         });
+        const memory_handle: MemoryInitialState = {
+            brain_state: this.state,
+            language_faculty: this.language_faculties,
+            baseDir: "save/memory",
+        }
+        this.memory_faculties = new Memory(memory_handle);
+
     }
 
 
@@ -160,6 +169,7 @@ export class Brain implements IGeminiBrainController {
         return {
             language: this.language_faculties,
             thought: this.thought_faculties,
+            memory: this.memory_faculties,
         }
     }
 

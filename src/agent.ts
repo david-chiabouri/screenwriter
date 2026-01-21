@@ -20,8 +20,8 @@ export type AgentConfig = {
 const DEFAULT_AGENT_CONFIG: AgentConfig = {
     google_genai_config: {
         current_thinking_shape: {
-            thinkingSpeed: ThoughtSpeed.FAST,
-            thinkingLevel: ThoughtClarity.INTUITIVE,
+            thoughtSpeed: ThoughtSpeed.FASTER,
+            thoughtClarity: ThoughtClarity.INTUITIVE,
         },
         systemInstruction: "",
     },
@@ -35,6 +35,15 @@ export type AgentConstructorIngredients = {
     goals?: ISemanticGoal[];
     config?: AgentConfig;
 
+}
+
+export type AgentState = {
+    name: string;
+    brain: Brain;
+    metagoal: ISemanticMetaGoal;
+    goals: ISemanticGoal[];
+    context?: string;
+    readonly config: AgentConfig;
 }
 
 /**
@@ -127,4 +136,30 @@ export class Agent {
         return agent;
     }
 
+
+
+    public static async pulse<T extends AbstractSemanticState>(agent: Agent, state: T): Promise<T> {
+        const context: AgentState = {
+            name: agent.name,
+            brain: agent.brain,
+            metagoal: agent.metagoal,
+            goals: agent._goals,
+            config: DEFAULT_AGENT_CONFIG ?? {
+                google_genai_config: {
+                    current_thinking_shape: {
+                        thoughtSpeed: ThoughtSpeed.THOUGHTFUL,
+                        thoughtClarity: ThinkingLevel.THINKING_LEVEL_UNSPECIFIED,
+                        includeThoughts: undefined
+                    },
+                    systemInstruction: ""
+                },
+                root_instruction: ""
+            }
+        }
+
+        const promise = new Promise<T>((resolve, reject) => {
+
+        })
+        return promise;
+    }
 }

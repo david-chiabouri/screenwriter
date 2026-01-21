@@ -1,5 +1,5 @@
 import type { BrainStatePlan } from "../brain";
-import type { IHypothesis, ITopic, IReviewable } from "../thought";
+import type { IHypothesis, ITopic, IReviewable, IStoryline } from "../thought";
 
 export class Semantify {
 
@@ -42,7 +42,7 @@ export class Semantify {
     }
 
     public static standard<T>(data: IAbstractSemanticData<T>): string {
-        return data.semantify(data);
+        return Semantify.abstract(data);
     }
 
     public static contexed<T>(data: IContexedSemanticData<T>): string {
@@ -275,11 +275,15 @@ export class SemanticStateFactory {
 
         const topic_hydratable: ITopic = hydratable.past?.most_accurate_hypothesis?.topic ?? {
             title: hydratable.past?.most_accurate_hypothesis?.topic?.title ?? "",
+            synopsis: hydratable.past?.most_accurate_hypothesis?.topic?.synopsis ?? "",
             semantic_data: hydratable.past?.most_accurate_hypothesis?.topic?.semantic_data ?? "",
+            tags: hydratable.past?.most_accurate_hypothesis?.topic?.tags ?? [],
             semantic_tags: hydratable.past?.most_accurate_hypothesis?.topic?.semantic_tags ?? [],
             timestamp: hydratable.past?.most_accurate_hypothesis?.topic?.timestamp ?? 0,
             description: hydratable.past?.most_accurate_hypothesis?.topic?.description ?? "",
+            evidence: hydratable.past?.most_accurate_hypothesis?.topic?.evidence ?? [],
             reviews: hydratable.past?.most_accurate_hypothesis?.topic?.reviews ?? [],
+
             semantify: Semantify.topic,
         };
         const storyline_hydratable = hydratable.past?.most_accurate_hypothesis?.storyline ?? {
@@ -289,13 +293,17 @@ export class SemanticStateFactory {
             introduction: hydratable.past?.most_accurate_hypothesis?.storyline?.introduction ?? "",
             body: hydratable.past?.most_accurate_hypothesis?.storyline?.body ?? [],
             conclusion: hydratable.past?.most_accurate_hypothesis?.storyline?.conclusion ?? ""
-        };
+        } as IStoryline;
         const hypothesis_hydratable: IHypothesis = hydratable.past?.most_accurate_hypothesis ?? {
+            title: hydratable.past?.most_accurate_hypothesis?.title ?? "",
+            synopsis: hydratable.past?.most_accurate_hypothesis?.synopsis ?? "",
+            tags: hydratable.past?.most_accurate_hypothesis?.tags ?? [],
+            timestamp: hydratable.past?.most_accurate_hypothesis?.timestamp ?? 0,
             topic: topic_hydratable,
             thesis: hydratable.past?.most_accurate_hypothesis?.thesis ?? "",
             storyline: storyline_hydratable,
             reviews: hydratable.past?.most_accurate_hypothesis?.reviews ?? [],
-
+            evidence: hydratable.past?.most_accurate_hypothesis?.evidence ?? [],
         };
 
 

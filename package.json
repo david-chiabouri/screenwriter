@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@google/genai": "^1.37.0",
+    "@lancedb/lancedb": "^0.23.0",
     "linked-chain": "^1.0.2"
   }
 }

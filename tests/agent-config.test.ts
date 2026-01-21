@@ -27,8 +27,8 @@ describe("Agent Configuration & Integration", () => {
             google_genai_config: {
                 systemInstruction: "System prompt",
                 current_thinking_shape: {
-                    thinkingSpeed: ThoughtSpeed.FAST, // Specific speed
-                    thinkingLevel: ThoughtClarity.CLEAR,
+                    thoughtSpeed: ThoughtSpeed.FAST, // Specific speed
+                    thoughtClarity: ThoughtClarity.CLEAR,
                     includeThoughts: false
                 }
             }
@@ -56,8 +56,8 @@ describe("Agent Configuration & Integration", () => {
         console.log("--- Finished Call 1 ---");
 
         // 3. UPDATE CONFIG via Brain State
-        agent.brain.state.genai_state.current_thinking_shape.thinkingSpeed = ThoughtSpeed.THOUGHTFUL;
-        agent.brain.state.genai_state.current_thinking_shape.thinkingLevel = ThoughtClarity.IMPRESSIONISTIC;
+        agent.brain.state.genai_state.current_thinking_shape.thoughtSpeed = ThoughtSpeed.THOUGHTFUL;
+        agent.brain.state.genai_state.current_thinking_shape.thoughtClarity = ThoughtClarity.IMPRESSIONISTIC;
 
         // 4. SECOND CALL - Should use new config
         console.log("--- Starting Real API Call (Test 2 - Call 2) ---");
