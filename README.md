@@ -1,4 +1,5 @@
 # Experimental Research: Recursive Agentic Architectures with Contextful RAG for Generative Media
+![Status](https://img.shields.io/badge/Status-Research_Prototype-blue)
 
 > **Status**: Active Research
 > **Domain**: Cognitive AI, Systems Architecture, Generative Media
