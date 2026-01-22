@@ -1,50 +1,16 @@
 import { ThinkingLevel } from "@google/genai";
-import { Brain, type BrainInitialState, type GoogleGenAIState } from "./agent/brain";
-import { Semantify, type AbstractSemanticState, type ISemanticGoal, type ISemanticMetaGoal, type SemanticMetadata } from "./agent/semantics/semantic-state";
-import { ThoughtClarity, ThoughtSpeed } from "./agent/thought";
 
-/**
- * Configuration options for the Agent.
- * @property google_genai_config - Configuration for the underlying Google GenAI model (Brain).
- * @property root_instruction - The base systemic instruction that defines the agent's persona and constraints.
- */
-export type AgentConfig = {
-    google_genai_config: GoogleGenAIState;
-    root_instruction: string;
-}
+// local
+import { Brain, type BrainInitialState, type GoogleGenAIState } from "@siena-brain";
+import { type AbstractSemanticState, type ISemanticGoal, type ISemanticMetaGoal, type SemanticMetadata } from "@siena-language-semantics/semantic-state";
+import { ThoughtSpeed } from "./brain/thought";
+import type { AgentConstructorIngredients, AgentConfig, AgentState } from "./type";
+import _G from "./globals.const";
 
-/**
- * Default configuration used when no specific config is provided.
- * Initializes the agent with a fast thinking model and intuitive clarity.
- */
-const DEFAULT_AGENT_CONFIG: AgentConfig = {
-    google_genai_config: {
-        current_thinking_shape: {
-            thoughtSpeed: ThoughtSpeed.FASTER,
-            thoughtClarity: ThoughtClarity.INTUITIVE,
-        },
-        systemInstruction: "",
-    },
-    root_instruction: "You are a W.I.P agent within the Screenwriter Agentic project. Your current global instructions are to accept that you are a statless, memoryless agent that is not capabale of nothing.",
-}
+// export==
+export * as types from "./type";
+export * as globals from "./globals.const";
 
-export type AgentConstructorIngredients = {
-    name: string;
-    brain: Brain;
-    metagoal: ISemanticGoal;
-    goals?: ISemanticGoal[];
-    config?: AgentConfig;
-
-}
-
-export type AgentState = {
-    name: string;
-    brain: Brain;
-    metagoal: ISemanticMetaGoal;
-    goals: ISemanticGoal[];
-    context?: string;
-    readonly config: AgentConfig;
-}
 
 /**
  * The main Agent class.
@@ -116,7 +82,7 @@ export class Agent {
      * @returns A new Agent instance.
      */
     public static new(name: string = "Unnamed", metagoal: ISemanticMetaGoal, config?: AgentConfig): Agent {
-        const genai_config: GoogleGenAIState = config?.google_genai_config ?? DEFAULT_AGENT_CONFIG.google_genai_config;
+        const genai_config: GoogleGenAIState = config?.google_genai_config ?? _G.default_config.google_genai_config;
 
         const init_state: BrainInitialState = {
             genai_state: genai_config,
@@ -144,7 +110,7 @@ export class Agent {
             brain: agent.brain,
             metagoal: agent.metagoal,
             goals: agent._goals,
-            config: DEFAULT_AGENT_CONFIG ?? {
+            config: _G.default_config ?? {
                 google_genai_config: {
                     current_thinking_shape: {
                         thoughtSpeed: ThoughtSpeed.THOUGHTFUL,

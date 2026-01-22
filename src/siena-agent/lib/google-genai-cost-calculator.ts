@@ -1,4 +1,4 @@
-import { ThoughtSpeed } from "../thought";
+import { ThoughtSpeed } from "@siena-thought";
 
 /**
  * Interface defining the pricing structure for a specific GenAI model.

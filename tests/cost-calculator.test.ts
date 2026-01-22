@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { GoogleGenAICosts } from "../src/agent/lib/google-genai-cost-calculator";
-import { ThoughtSpeed } from "../src/agent/thought";
+import { GoogleGenAICosts } from "@siena-lib/google-genai-cost-calculator";
+import { ThoughtSpeed } from "@siena-thought";
 
 describe("GoogleGenAICosts", () => {
     test("should estimate basic cost for Flash (under 128k)", () => {

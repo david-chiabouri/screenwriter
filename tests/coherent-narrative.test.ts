@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
-import type { ICoherentNarrative } from "../src/agent/thought";
-import { Agent } from "../src/agent";
-import type { AbstractSemanticState, ISemanticMetaGoal, SemanticMetadata } from "../src/agent/semantics/semantic-state";
+import type { ICoherentNarrative } from "@siena-brain/thought";
+import { Agent } from "@siena-agent";
+import type { AbstractSemanticState, ISemanticMetaGoal, SemanticMetadata } from "@siena-language-semantics/semantic-state";
 
 describe("coherent narrative tests", () => {
     test("coherent narrative", async () => {

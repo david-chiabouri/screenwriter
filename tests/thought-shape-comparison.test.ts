@@ -1,7 +1,9 @@
 import { describe, expect, test } from "bun:test";
-import { Agent } from "../src/agent";
-import { ThoughtClarity, ThoughtSpeed } from "../src/agent/thought";
-import type { AbstractSemanticState, ISemanticMetaGoal, SemanticMetadata } from "../src/agent/semantics/semantic-state";
+
+// namespace
+import { Agent } from "@siena-agent";
+import { ThoughtClarity, ThoughtSpeed } from "@siena-thought";
+import type { AbstractSemanticState, ISemanticMetaGoal, SemanticMetadata } from "@siena-language-semantics/semantic-state";
 
 // Setup Data
 const abstract_state: AbstractSemanticState = {

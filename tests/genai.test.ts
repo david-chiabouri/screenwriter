@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { Agent } from "../src/agent";
-import { type AbstractSemanticState, type ISemanticGoal, type ISemanticMetaGoal, type SemanticMetadata } from "../src/agent/semantics/semantic-state";
+import { Agent } from "@siena-agent";
+import { type AbstractSemanticState, type ISemanticGoal, type ISemanticMetaGoal, type SemanticMetadata } from "@siena-language-semantics/semantic-state";
 
 
 // the abstract state represents the context of the AI prompt used to generate the goal.

@@ -1,12 +1,11 @@
-import { GenerateContentResponse, GoogleGenAI, ThinkingLevel } from "@google/genai";
-import { Language } from "./language";
-import { Thought, ThoughtSpeed, type ThoughtClarity, type ThoughtShape } from "./thought";
-import { SemanticStateFactory, type IContexedSemanticData, type ISemanticGoal, type ISemanticMetaGoal, type ISemanticState } from "./semantics/semantic-state";
-import type { IGoogleGenAI } from "./lib/primitive";
-import { Memory, type MemoryInitialState } from "./memory";
+import { GoogleGenAI } from "@google/genai";
 
-
-
+// Namespaces
+import { Language } from "@siena-language";
+import { Thought, ThoughtSpeed, type ThoughtClarity } from "@siena-thought";
+import { SemanticStateFactory, type IContexedSemanticData, type ISemanticGoal, type ISemanticMetaGoal, type ISemanticState } from "@siena-language-semantics/semantic-state";
+import { Memory, type MemoryInitialState } from "@siena-memory";
+import { type ILargeLanguageModelController } from "@siena-lib/primitives";
 
 
 
@@ -69,7 +68,7 @@ export type BrainStatePlan = {
 /**
  * Interface for the Brain controller, exposing the GenAI instance and its state.
  */
-export interface IGeminiBrainController extends IGoogleGenAI {
+export interface IGeminiBrainController extends ILargeLanguageModelController {
     instance: GoogleGenAI;
     state: BrainState;
 }

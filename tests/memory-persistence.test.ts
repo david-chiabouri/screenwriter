@@ -1,12 +1,14 @@
 import { describe, expect, test, afterAll, beforeAll } from "bun:test";
-import { Memory, type MemoryInitialState } from "../src/agent/memory";
-import { Language } from "../src/agent/language";
-import type { BrainState, IGeminiBrainController } from "../src/agent/brain";
 import { GoogleGenAI } from "@google/genai";
+
+// local
+import { Memory, type MemoryInitialState } from "@siena-memory";
+import { Language } from "@siena-language";
+import type { BrainState, IGeminiBrainController } from "@siena-brain";
 import * as fs from "fs/promises";
 import * as path from "path";
-import { ThoughtSpeed } from "../src/agent/thought";
-import { SemanticStateFactory } from "../src/agent/semantics/semantic-state";
+import { ThoughtSpeed } from "@siena-thought";
+import { SemanticStateFactory } from "@siena-language-semantics/semantic-state";
 
 const TEST_SAVE_DIR = "tests/temp_memory_save";
 

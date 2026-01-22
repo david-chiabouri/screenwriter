@@ -1,24 +1,22 @@
-import { IFaculty } from "./lib/primitive";
-import type { BrainState } from "./brain";
-import { Language } from "./language";
-import type { IAbstractSemanticData } from "./semantics/semantic-state";
-import type { ICoherentNarrative, IHypothesis, ITopic } from "./thought";
+// std
 import * as fs from "fs/promises";
 import * as path from "path";
 
-export interface IMemoryFaculty extends IFaculty {
-    language_faculty: Language;
-    saveHypothesis(hypothesis: IHypothesis): Promise<void>;
-    saveNarrative(narrative: ICoherentNarrative): Promise<void>;
-    saveTopic(topic: ITopic): Promise<void>;
-}
+// namespace
+import { IFaculty } from "@siena-lib/primitives/class";
+import type { BrainState } from "@siena-brain";
+import { Language } from "@siena-language";
+import type { IAbstractSemanticData } from "@siena-language-semantics/semantic-state";
+import type { ICoherentNarrative, IHypothesis, ITopic } from "@siena-thought";
 
-export type MemoryInitialState = {
-    brain_state: BrainState;
-    language_faculty: Language;
-    baseDir?: string;
-}
+// local
+import type { IMemoryFaculty } from "./interface";
+import type { MemoryInitialState } from "./type";
 
+
+// exports
+export * from "./interface";
+export * from "./type";
 
 /**
  * TODO: Implement vector database and solidfy definitions regarding embeddings and string data. We will store both. The vector embeddings will be used to search for data to load effectivly and cheaply. So we will hold a vector embeddings of the tags or other crucial identifying data and store that in the DB to index and load. We can also implement a psuedo "short term" memory which just uses google's GenAI embedding methods for search.

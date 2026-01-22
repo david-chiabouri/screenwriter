@@ -1,208 +1,25 @@
-import { type GenerateContentResponse, type GoogleGenAI, ThinkingLevel } from "@google/genai";
-import { IFaculty, type IGoogleGenAI } from "./lib/primitive";
-import type { LanguageProcessCallable, LanguageProcessContext } from "./language";
-import type { BrainState, IGeminiBrainController } from "./brain";
-import { Semantify, type IAbstractSemanticData } from "./semantics/semantic-state";
+import { type GenerateContentResponse } from "@google/genai";
+import { IFaculty } from "../../lib/primitives/class";
+import type { LanguageProcessCallable, LanguageProcessContext } from "@siena-language";
+import type { BrainState } from "@siena-brain";
+import { Semantify } from "@siena-language-semantics/semantic-state";
+
+// Local
+import type { ICoherentNarrative, IHypothesis, IStoryline, IThinkingFaculty, ITopic } from "./interface";
+import { ThoughtSpeed } from "./enum";
+import type { ThoughtInitialState } from "./type";
+
+// exports
+export * from "./enum";
+export * from "./interface";
+export * from "./type";
 
 
-/**
- * Enum defining the thinking speeds (models) available to the brain.
- * Different models are chosen based on the complexity and urgency of the task.
- */
-/**
- * Enum defining the thinking speeds (models) available to the brain.
- * Different models are chosen based on the complexity and urgency of the task.
- * 
- * Note: Uses specific versioned model names to ensure compatibility with Google GenAI API.
- */
-export enum ThoughtSpeed {
-    /** 
-     * gemini-3-pro-preview
-     * High capability, balanced speed. Excellent for deep reasoning and creative writing. 
-     * Supports complex instruction following.
-     */
-    THOUGHTFUL = "gemini-3-pro-preview",
-
-    /** 
-     * gemini-3-flash-preview
-     * The standard workhorse. Good balance of speed and reasoning for general tasks.
-     */
-    STANDARD = "gemini-3-flash-preview",
-
-    /** 
-     * gemini-2.5-flash
-     * Optimized for maximum speed and lower latency. 
-     * Ideal for quick validation or simple data processing.
-     * Note: May not support advanced 'thinkingConfig' features like Chain of Thought.
-     */
-    FAST = "gemini-2.5-pro",
-
-    /** 
-     * gemini-2.5-flash (Experimental Alias)
-     * Reserved for future faster-speed or experimental model variants.
-     */
-    FASTER = "gemini-2.5-flash", // Experimental
-
-    /**
-     * gemini-flash-lite
-     
-     */
-    EXTREME = "gemini-flash-lite", // Experimental
-
-}
-
-export enum ThoughtEmbeddingModel {
-
-    /**
-     * gemini-embedding-001
-     * 
-     */
-    STANDARD = "gemini-embedding-001",
-}
-
-/**
- * Mapping of verbose thinking level descriptions to API constants.
- * Allows for more expressive control over the thinking depth.
- */
-export enum ThoughtLevelVerboseAsClarity {
-    CLEAR = "HIGH",
-    INTUITIVE = "MEDIUM",
-    IMPRESSIONISTIC = "MEDIUM",
-    CONFUSED = "MINIMAL",
-    UNSPECIFIED = "THINKING_LEVEL_UNSPECIFIED",
-}
-
-/**
- * Union type for thinking clarity, accepting either direct ThinkingLevel enums or verbose string aliases.
- * Controls the depth of the "Chain of Thought" reasoning process if supported by the model.
- */
-export const ThoughtClarity = {
-    ...ThinkingLevel,
-    ...ThoughtLevelVerboseAsClarity,
-} as const;
-
-export type ThoughtClarity = (typeof ThoughtClarity)[keyof typeof ThoughtClarity];
 
 
-/**
- * Represents the result of a review process by a model.
- * Reviews help validate and refine topics and hypotheses.
- */
-export type ReviewResult = {
-    /** The name of the model performing the review. */
-    model_name: string;
-    /** The text content of the review. */
-    review: string;
-    /** A numerical rating of the reviewed item (e.g., 0-10 or 0-5). */
-    rating: number; // are normalized to 
-    /** When the review was performed. */
-    timestamp: number;
-}
-
-/**
- * Interface for any agent data that can be subject to review.
- */
-export interface IReviewable {
-    title: string;
-    synopsis: string;
-    tags: string[];
-    timestamp: number;
-    /** A collection of reviews attached to this item. */
-    reviews: ReviewResult[];
-    /** Optional evidence supporting the item's validity. */
-    evidence?: any;
-}
-
-/**
- * Represents a specific subject or area of interest for the agent.
- * Topics are the building blocks of the agent's knowledge graph.
- */
-export interface ITopic extends IAbstractSemanticData<string>, IReviewable {
-    title: string;
-    description: string;
-    synopsis: string;
-    semantic_data: string;
-    semantic_tags: string[];
-    timestamp: number;
-
-    reviews: ReviewResult[];
-    evidence: ICoherentNarrative[];
-}
-
-export interface IStoryline extends IReviewable {
 
 
-    // The concrete screenplay output components
-    introduction: string;
-    body: string[];
-    conclusion: string;
 
-
-}
-
-export interface ICoherentNarrative extends IReviewable {
-    title: string;
-    synopsis: string;
-    narrative: string;
-
-    tags: string[];
-
-    timestamp: number;
-
-    reviews: ReviewResult[];
-    evidence?: ICoherentNarrative[];
-}
-
-/**
- * Represents a working hypothesis or potential narrative structure.
- * This is where the agent formulates its creative ideas.
- */
-export interface IHypothesis extends IReviewable {
-    title: string;
-    synopsis: string;
-    tags: string[];
-    timestamp: number;
-    /** The central topic this hypothesis addresses. */
-    topic: ITopic;
-    /** The core argument or premise of the hypothesis. */
-    thesis: string;
-    /** The narrative structure developed from the thesis. */
-    storyline: IStoryline;
-
-    evidence: ICoherentNarrative[];
-}
-
-/**
- * Configuration for the agent's thought process.
- * Controls the depth and speed of the AI model's reasoning.
- * Equivalent to the "thinkingConfig" in the Vertex AI/Gemini API.
- */
-export type ThoughtShape = {
-    /** The clarity or depth of the thought process. */
-    thinkingLevel: ThoughtClarity;
-    /** The speed/model to use (e.g., specific Gemini flash variants). */
-    thinkingSpeed: ThoughtSpeed;
-    /** Whether to include the raw thought trace in the output. */
-    includeThoughts?: boolean;
-}
-
-/**
- * Interface for the thinking faculty, which coordinates language generation for cognitive tasks.
- */
-export interface IThinkingFaculty extends IFaculty {
-    /** A callable to process content through the language faculty. */
-    language_callable: LanguageProcessCallable;
-}
-
-/**
- * Initialization parameters for the Thought faculty.
- */
-export type ThoughtInitialState = {
-    /** Callable to invoke the language faculty. */
-    language_callable: LanguageProcessCallable;
-    /** The brain state associated with this faculty. */
-    brain_state: BrainState;
-}
 
 
 

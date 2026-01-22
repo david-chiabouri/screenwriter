@@ -1,8 +1,8 @@
 import { GenerateContentResponse, GoogleGenAI, ThinkingLevel } from "@google/genai";
-import { IFaculty, type IAbstractStateContainer, type IGoogleGenAI } from "./lib/primitive";
-import { Semantify, type AbstractSemanticState, type ISemanticState, type SemanticMetadata } from "./semantics/semantic-state";
-import { ThoughtEmbeddingModel, ThoughtSpeed } from "./thought";
-import type { BrainState, GoogleGenAIState, IGeminiBrainController } from "./brain";
+import { IFaculty } from "@siena-lib/primitives";
+import { Semantify, type AbstractSemanticState, type ISemanticState, type SemanticMetadata } from "@siena-language-semantics/semantic-state";
+import { ThoughtEmbeddingModel, ThoughtSpeed } from "@siena-thought";
+import type { BrainState, GoogleGenAIState, IGeminiBrainController } from "@siena-brain";
 
 
 export type LanguageProcessContext = {
