@@ -1,4 +1,6 @@
 import type { IHypothesis, ITopic } from "@siena-thought";
+
+// local
 import type { AbstractSemanticState, SemanticMetadata, IAbstractSemanticData, IContexedSemanticData, ISemanticGoal, ISemanticMetaGoal } from "./semantic-state";
 
 export class Semantify {

@@ -1,3 +1,5 @@
+import type { GoogleGenAIState, Brain } from "@siena-brain";
+import type { ISemanticGoal, ISemanticMetaGoal } from "@siena-language-semantics/semantic-state";
 
 
 /**

@@ -1,25 +1,98 @@
 import { type GenerateContentResponse } from "@google/genai";
-import { IFaculty } from "../../lib/primitives/class";
+
+// Namespace
+import { Faculty } from "@siena-lib/primitives";
 import type { LanguageProcessCallable, LanguageProcessContext } from "@siena-language";
 import type { BrainState } from "@siena-brain";
 import { Semantify } from "@siena-language-semantics/semantic-state";
 
 // Local
-import type { ICoherentNarrative, IHypothesis, IStoryline, IThinkingFaculty, ITopic } from "./interface";
-import { ThoughtSpeed } from "./enum";
-import type { ThoughtInitialState } from "./type";
+import type { ICoherentNarrative, IHypothesis, IStoryline, IThinkingFaculty, ITopic } from "./interface.d.ts";
+import type { ThoughtInitialState } from "./type.d.ts";
 
 // exports
-export * from "./enum";
-export * from "./interface";
-export * from "./type";
+export type * from "./interface.d.ts";
+export type * from "./type.d.ts";
 
 
 
+/**
+ * Enum defining the thinking speeds (models) available to the brain.
+ * Different models are chosen based on the complexity and urgency of the task.
+ * 
+ * Note: Uses specific versioned model names to ensure compatibility with Google GenAI API.
+ */
+export enum ThoughtSpeed {
+    /** 
+     * gemini-3-pro-preview
+     * High capability, balanced speed. Excellent for deep reasoning and creative writing. 
+     * Supports complex instruction following.
+     */
+    THOUGHTFUL = "gemini-3-pro-preview",
+
+    /** 
+     * gemini-3-flash-preview
+     * The standard workhorse. Good balance of speed and reasoning for general tasks.
+     */
+    STANDARD = "gemini-3-flash-preview",
+
+    /** 
+     * gemini-2.5-flash
+     * Optimized for maximum speed and lower latency. 
+     * Ideal for quick validation or simple data processing.
+     * Note: May not support advanced 'thinkingConfig' features like Chain of Thought.
+     */
+    FAST = "gemini-2.5-pro",
+
+    /** 
+     * gemini-2.5-flash (Experimental Alias)
+     * Reserved for future faster-speed or experimental model variants.
+     */
+    FASTER = "gemini-2.5-flash", // Experimental
+
+    /**
+     * gemini-flash-lite
+     
+     */
+    EXTREME = "gemini-flash-lite", // Experimental
+
+}
+
+export enum ThoughtEmbeddingModel {
+
+    /**
+     * gemini-embedding-001
+     * 
+     */
+    STANDARD = "gemini-embedding-001",
+}
+
+/**
+ * Mapping of verbose thinking level descriptions to API constants.
+ * Allows for more expressive control over the thinking depth.
+ */
+export enum ThoughtLevelVerboseAsClarity {
+    CLEAR = "HIGH",
+    INTUITIVE = "MEDIUM",
+    IMPRESSIONISTIC = "MEDIUM",
+    CONFUSED = "MINIMAL",
+    UNSPECIFIED = "THINKING_LEVEL_UNSPECIFIED",
+}
 
 
-
-
+/**
+ * We manually merge the keys from Google's ThinkingLevel with your Verbose aliases
+ * to create the unified "Secure Namespace" you requested.
+ */
+export enum ThoughtClarity {
+    // --- Verbose Aliases ---
+    // Descriptive identifiers mapping to the same underlying values.
+    CLEAR = "HIGH",
+    INTUITIVE = "MEDIUM",
+    IMPRESSIONISTIC = "MEDIUM",
+    CONFUSED = "MINIMAL",
+    UNSPECIFIED = "THINKING_LEVEL_UNSPECIFIED",
+}
 
 
 
@@ -28,7 +101,7 @@ export * from "./type";
  * It uses the underlying language processing capabilities directly to form queries,
  * analyze data, and generate creative content like hypotheses and storylines.
  */
-export class Thought extends IFaculty implements IThinkingFaculty {
+export class Thought extends Faculty implements IThinkingFaculty {
     public language_callable: LanguageProcessCallable;
     protected brain_state: BrainState;
 
@@ -99,6 +172,13 @@ You are not a writer; you are the mechanism of the story itself unfolding. Do no
         return unpacked_narrative;
     }
 
+    /**
+     * Formulates a scientific hypothesis based on a coherent narrative.
+     * Uses the ThoughtSpeed.STANDARD model for reliable JSON structure generation.
+     * 
+     * @param narrative - The narrative to analyze.
+     * @returns A promise resolving to a structured IHypothesis object.
+     */
     public async formulate_hypothesis(narrative: ICoherentNarrative): Promise<IHypothesis> {
         const context_instructions_template = `You are a Scientific Theorist. You are analyzed the provided coherent narrative and formulating a scientific hypothesis that explains the underlying mechanism or phenomenon.
         
@@ -129,8 +209,8 @@ You are not a writer; you are the mechanism of the story itself unfolding. Do no
 
         this.brain_state.genai_state.systemInstruction = context_instructions_template;
 
-        // Use THOUGHTFUL model for high-quality structured output
-        const response = await this.process_semantic_language("Generate Hypothesis JSON", ThoughtSpeed.THOUGHTFUL);
+        // Use STANDARD model for faster reliability on JSON tasks (Pro Preview can hang on structured output)
+        const response = await this.process_semantic_language("Generate Hypothesis JSON", ThoughtSpeed.STANDARD);
 
         const text = response.text ?? "{}";
         // Simple cleanup for markdown code blocks if present

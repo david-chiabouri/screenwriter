@@ -31,7 +31,7 @@ describe("ThoughtShape Output Comparison", () => {
                 name: "FAST (No Thinking)",
                 config: {
                     thoughtSpeed: ThoughtSpeed.FAST,
-                    thoughtClarity: ThoughtClarity.THINKING_LEVEL_UNSPECIFIED,
+                    thoughtClarity: ThoughtClarity.UNSPECIFIED,
                     includeThoughts: false
                 }
             },

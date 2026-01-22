@@ -1,26 +1,37 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Namespaces
+// Namespace
 import { Language } from "@siena-language";
 import { Thought, ThoughtSpeed, type ThoughtClarity } from "@siena-thought";
-import { SemanticStateFactory, type IContexedSemanticData, type ISemanticGoal, type ISemanticMetaGoal, type ISemanticState } from "@siena-language-semantics/semantic-state";
-import { Memory, type MemoryInitialState } from "@siena-memory";
+import { Memory } from "@siena-memory";
+import type { MemoryInitialState } from "@siena-memory/type.d.ts";
+
 import { type ILargeLanguageModelController } from "@siena-lib/primitives";
+import { SemanticStateFactory, type IContexedSemanticData, type ISemanticGoal, type ISemanticMetaGoal, type ISemanticState } from "@siena-language-semantics/semantic-state";
 
 
 
 
 export type GoogleGenAIState = {
+    /**
+     * The current configuration of the agent's thinking process.
+     * Determines which models are used and how deep the reasoning goes.
+     */
     current_thinking_shape: {
         thoughtSpeed: ThoughtSpeed,
         thoughtClarity: ThoughtClarity,
         includeThoughts?: boolean,
     },
+    /**
+     * The system instruction (prompt) currently active for the GenAI model.
+     */
     systemInstruction: string,
 }
 
 export type BrainInitialState = {
+    /** The initial GenAI configuration. */
     genai_state: GoogleGenAIState;
+    /** The initial meta-goal for the agent. */
     metagoal: ISemanticMetaGoal;
 }
 
@@ -146,14 +157,23 @@ export class Brain implements IGeminiBrainController {
 
 
 
+    /**
+     * Accessor for the agent's meta-goal.
+     */
     public get metagoal(): ISemanticMetaGoal {
         return this.state.actor_state._metagoal;
     }
 
+    /**
+     * Accessor for the agent's current active goals.
+     */
     public get goals(): ISemanticGoal[] {
         return this.state.actor_state.current_goals;
     }
 
+    /**
+     * Accessor for the agent's current plan of action.
+     */
     public get plan(): BrainStatePlan {
         return this.state.actor_state.current_plan;
     }

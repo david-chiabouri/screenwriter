@@ -16,29 +16,32 @@
       "@siena-agent": [
         "src/siena-agent/index.ts"
       ],
+      "@siena-agent-settings": [
+        "src/siena-agent/__settings.ts"
+      ],
       "@siena-lib/*": [
         "src/siena-agent/lib/*"
       ],
       "@siena-brain/*": [
         "src/siena-agent/brain/*"
       ],
-      "@siena-brain": [
-        "src/siena-agent/brain/index.ts"
-      ],
       "@siena-memory/*": [
         "src/siena-agent/brain/memory/*"
-      ],
-      "@siena-memory": [
-        "src/siena-agent/brain/memory/index.ts"
       ],
       "@siena-thought/*": [
         "src/siena-agent/brain/thought/*"
       ],
+      "@siena-language-semantics/*": [
+        "src/siena-agent/brain/language/semantics/*"
+      ],
       "@siena-thought": [
         "src/siena-agent/brain/thought/index.ts"
       ],
-      "@siena-language-semantics/*": [
-        "src/siena-agent/brain/language/semantics/*"
+      "@siena-memory": [
+        "src/siena-agent/brain/memory/index.ts"
+      ],
+      "@siena-brain": [
+        "src/siena-agent/brain/index.ts"
       ],
       "@siena-language/*": [
         "src/siena-agent/brain/language/*"
@@ -55,7 +58,7 @@
     "noEmit": true,
     // Best practices
     "strict": true,
-    "skipLibCheck": true,
+    "skipLibCheck": false, // switched from true because it makes no sense why this i sfalse.
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,

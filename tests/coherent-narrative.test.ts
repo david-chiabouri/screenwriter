@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+
 import type { ICoherentNarrative } from "@siena-brain/thought";
 import { Agent } from "@siena-agent";
 import type { AbstractSemanticState, ISemanticMetaGoal, SemanticMetadata } from "@siena-language-semantics/semantic-state";
@@ -68,6 +69,7 @@ describe("coherent narrative tests", () => {
             };
             // save them to disk
             await agent.brain.faculties().memory.saveNarrative(current_narrative);
+            console.log(`\n  >> Narrative Saved: ${current_narrative.title}`);
             // Recursive iteration to grow the narrative
             const iterations = 2; // Fixed number of iterations for test
             for (let i = 0; i < iterations; i++) {
@@ -84,13 +86,16 @@ describe("coherent narrative tests", () => {
 
                 console.log(`  >> Evolved length: ${current_narrative.narrative.length} chars`);
             }
+            agent.brain.faculties().memory.saveNarrative(current_narrative);
+            console.log(`\n  >> Narrative Saved: ${current_narrative.title}`);
 
             console.log(`\n  >> Formulating Hypothesis for ${seed.title}...`);
             const hypothesis = await agent.brain.faculties().thought.formulate_hypothesis(current_narrative);
             // save them to disk
-            await agent.brain.faculties().memory.saveHypothesis(hypothesis);
 
             console.log(`  >> Hypothesis Generated: ${hypothesis.title}`);
+            await agent.brain.faculties().memory.saveHypothesis(hypothesis);
+            console.log(`\n  >> Hypothesis Saved: ${hypothesis.title}`);
             console.log(`  >> Thesis: ${hypothesis.thesis}`);
 
             expect(hypothesis).toBeDefined();

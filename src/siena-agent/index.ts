@@ -1,15 +1,18 @@
-import { ThinkingLevel } from "@google/genai";
+// namespace
+import { ThoughtSpeed, ThoughtClarity } from "@siena-thought";
 
 // local
 import { Brain, type BrainInitialState, type GoogleGenAIState } from "@siena-brain";
 import { type AbstractSemanticState, type ISemanticGoal, type ISemanticMetaGoal, type SemanticMetadata } from "@siena-language-semantics/semantic-state";
-import { ThoughtSpeed } from "./brain/thought";
-import type { AgentConstructorIngredients, AgentConfig, AgentState } from "./type";
-import _G from "./globals.const";
+
+// local
+import type { AgentConstructorIngredients, AgentConfig, AgentState } from "./type.d.ts";
+import _G from "./globals";
 
 // export==
-export * as types from "./type";
-export * as globals from "./globals.const";
+export type * from "./type.d.ts";
+export * from "./globals";
+export * from "./brain";
 
 
 /**
@@ -22,7 +25,14 @@ export class Agent {
     public static instansiated: Agent[] = [];
 
 
+    /**
+     * The name of the agent, used for identification.
+     */
     public name: string;
+
+    /**
+     * The meta-goal defining the agent's high-level purpose and constraints.
+     */
     public metagoal: ISemanticMetaGoal;
 
 
@@ -82,7 +92,7 @@ export class Agent {
      * @returns A new Agent instance.
      */
     public static new(name: string = "Unnamed", metagoal: ISemanticMetaGoal, config?: AgentConfig): Agent {
-        const genai_config: GoogleGenAIState = config?.google_genai_config ?? _G.default_config.google_genai_config;
+        const genai_config: GoogleGenAIState = config?.google_genai_config ?? _G.metatable.config.google_genai_config;
 
         const init_state: BrainInitialState = {
             genai_state: genai_config,
@@ -104,6 +114,14 @@ export class Agent {
 
 
 
+    /**
+     * Initiates a "pulse" or cognitive cycle for the agent.
+     * This method represents a moment of active processing where the agent evaluates its state and potential actions.
+     * 
+     * @param agent - The agent instance to pulse.
+     * @param state - The current semantic state to process.
+     * @returns A promise resolving to the updated state.
+     */
     public static async pulse<T extends AbstractSemanticState>(agent: Agent, state: T): Promise<T> {
         const context: AgentState = {
             name: agent.name,
@@ -113,8 +131,8 @@ export class Agent {
             config: _G.default_config ?? {
                 google_genai_config: {
                     current_thinking_shape: {
-                        thoughtSpeed: ThoughtSpeed.THOUGHTFUL,
-                        thoughtClarity: ThinkingLevel.THINKING_LEVEL_UNSPECIFIED,
+                        thoughtSpeed: ThoughtSpeed.STANDARD,
+                        thoughtClarity: ThoughtClarity.UNSPECIFIED,
                         includeThoughts: undefined
                     },
                     systemInstruction: ""

@@ -1,6 +1,10 @@
 import type { BrainStatePlan } from "@siena-brain";
 import type { IHypothesis, ITopic, IReviewable, IStoryline } from "@siena-thought";
+
+// local
 import { Semantify } from "./semantify";
+
+// exports
 export { Semantify } from "./semantify";
 
 

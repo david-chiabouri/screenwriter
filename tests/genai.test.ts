@@ -1,4 +1,6 @@
 import { describe, expect, test } from "bun:test";
+
+// namespaces
 import { Agent } from "@siena-agent";
 import { type AbstractSemanticState, type ISemanticGoal, type ISemanticMetaGoal, type SemanticMetadata } from "@siena-language-semantics/semantic-state";
 

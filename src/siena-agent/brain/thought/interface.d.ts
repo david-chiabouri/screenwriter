@@ -1,7 +1,10 @@
-import type { ReviewResult } from "./type";
+
+// namespace
 import type { IAbstractSemanticData } from "@siena-language-semantics/semantic-state";
-import type { IFaculty } from "@siena-lib/primitives";
+import type { Faculty } from "@siena-lib/primitives";
 import type { LanguageProcessCallable } from "@siena-language";
+// local
+import type { ReviewResult } from "./type.d.ts";
 
 /**
  * Interface for any agent data that can be subject to review.
@@ -81,7 +84,7 @@ export interface IHypothesis extends IReviewable {
 /**
  * Interface for the thinking faculty, which coordinates language generation for cognitive tasks.
  */
-export interface IThinkingFaculty extends IFaculty {
+export interface IThinkingFaculty extends Faculty {
     /** A callable to process content through the language faculty. */
     language_callable: LanguageProcessCallable;
 }

@@ -3,29 +3,28 @@ import * as fs from "fs/promises";
 import * as path from "path";
 
 // namespace
-import { IFaculty } from "@siena-lib/primitives/class";
 import type { BrainState } from "@siena-brain";
-import { Language } from "@siena-language";
-import type { IAbstractSemanticData } from "@siena-language-semantics/semantic-state";
 import type { ICoherentNarrative, IHypothesis, ITopic } from "@siena-thought";
+import { type LanguageFaculty } from "@siena-language";
+import type { IAbstractSemanticData } from "@siena-language-semantics/semantic-state";
+import { Faculty } from "@siena-lib/primitives";
 
 // local
-import type { IMemoryFaculty } from "./interface";
-import type { MemoryInitialState } from "./type";
+import type { IMemoryFaculty } from "./interface.d.ts";
+import type { MemoryInitialState } from "./type.d.ts";
 
-
-// exports
-export * from "./interface";
-export * from "./type";
 
 /**
  * TODO: Implement vector database and solidfy definitions regarding embeddings and string data. We will store both. The vector embeddings will be used to search for data to load effectivly and cheaply. So we will hold a vector embeddings of the tags or other crucial identifying data and store that in the DB to index and load. We can also implement a psuedo "short term" memory which just uses google's GenAI embedding methods for search.
  */
-export class Memory extends IFaculty implements IMemoryFaculty {
+export class Memory extends Faculty implements IMemoryFaculty {
     public brain_state: BrainState;
-    public language_faculty: Language;
+    public language_faculty: LanguageFaculty;
     private baseDir: string;
 
+    /**
+     * @param initial_state - The initial configuration for the Memory faculty.
+     */
     constructor(initial_state: MemoryInitialState) {
         super();
         this.language_faculty = initial_state.language_faculty;
@@ -62,14 +61,23 @@ export class Memory extends IFaculty implements IMemoryFaculty {
         }
     }
 
+    /**
+     * Persists a generated hypothesis to the file system.
+     */
     public async saveHypothesis(hypothesis: IHypothesis): Promise<void> {
         await this.save(hypothesis, "hypothesis");
     }
 
+    /**
+     * Persists a coherent narrative to the file system.
+     */
     public async saveNarrative(narrative: ICoherentNarrative): Promise<void> {
         await this.save(narrative, "narrative");
     }
 
+    /**
+     * Persists a generated topic to the file system.
+     */
     public async saveTopic(topic: ITopic): Promise<void> {
         await this.save(topic, "topic");
     }

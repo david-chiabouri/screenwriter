@@ -1,4 +1,8 @@
+
+// std
 import { describe, expect, test, afterAll, beforeAll } from "bun:test";
+
+// external
 import { GoogleGenAI } from "@google/genai";
 
 // local

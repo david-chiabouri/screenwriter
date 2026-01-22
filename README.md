@@ -13,26 +13,15 @@ The core idea is to create a digital "screenwriter" that takes the operators med
 6.  **Implements**: implements the screenplay script into a video with remotion.
 
 ## 🏗️ Architecture
+The project follows a bio-inspired Agentic architecture.
 
-The project follows a bio-inspired Agentic architecture:
+Please see [DOCS.md](DOCS.md) for a detailed architectural deepdive.
 
-### 1. The Agent (`src/agent.ts`)
-The top-level entity. It is the vessel for the "Brain".
-
-### 2. The Brain (`src/agent/brain.ts`)
-The central controller. It manages:
-*   **Semantic State**: The "memory" of the agent (Past, Current, Future).
-*   **Faculties**: The capabilities of the agent (Language, Thought).
-*   **Thinking Speed**: Dynamically switches between models based on task complexity.
-
-### 3. Faculties
-*   **Language (`src/agent/language.ts`)**: The interface to the raw GenAI model. It handles the "how" of communication, applying the current cognitive configuration (thinking level/speed).
-*   **Thought (`src/agent/thought.ts`)**: The higher-level intellect. It uses the Language faculty to process abstract concepts, review work, and generate new ideas (Hypotheses, Topics).
-
-### 4. Semantic State (`src/agent/semantics/semantic-state.ts`)
-A structured memory system that tracks:
-*   **Abstract Identity**: What, Where, Why, How.
-*   **Temporal Context**: Past (Experience), Current (Focus), and Future (Desires).
+### Quick Overview
+*   **Agent**: The physical embodiment.
+*   **Brain**: The central controller.
+*   **Faculties**: Specialized lobes (Language, Thought, Memory).
+*   **Semantic State**: The "mind" of the agent.
 
 ## ⚙️ Configuration & Models
 

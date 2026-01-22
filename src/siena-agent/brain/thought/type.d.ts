@@ -1,7 +1,12 @@
-import type { LanguageProcessCallable } from "@language";
-import type { BrainState } from "@brain";
-import { ThinkingLevel } from "@google/genai";
-import { ThoughtSpeed, ThoughtLevelVerboseAsClarity } from "./enum";
+
+// namespace
+import type { LanguageProcessCallable } from "@siena-language";
+import type { BrainState } from "@siena-brain";
+
+// local
+import { ThoughtClarity, ThoughtSpeed } from "./";
+
+
 /**
  * Initialization parameters for the Thought faculty.
  */
@@ -26,16 +31,6 @@ export type ThoughtShape = {
     includeThoughts?: boolean;
 }
 
-/**
- * Union type for thinking clarity, accepting either direct ThinkingLevel enums or verbose string aliases.
- * Controls the depth of the "Chain of Thought" reasoning process if supported by the model.
- */
-export const ThoughtClarity = {
-    ...ThinkingLevel,
-    ...ThoughtLevelVerboseAsClarity,
-} as const;
-
-export type ThoughtClarity = (typeof ThoughtClarity)[keyof typeof ThoughtClarity];
 
 
 /**
@@ -52,5 +47,3 @@ export type ReviewResult = {
     /** When the review was performed. */
     timestamp: number;
 }
-
-
