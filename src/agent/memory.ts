@@ -19,6 +19,10 @@ export type MemoryInitialState = {
     baseDir?: string;
 }
 
+
+/**
+ * TODO: Implement vector database and solidfy definitions regarding embeddings and string data. We will store both. The vector embeddings will be used to search for data to load effectivly and cheaply. So we will hold a vector embeddings of the tags or other crucial identifying data and store that in the DB to index and load. We can also implement a psuedo "short term" memory which just uses google's GenAI embedding methods for search.
+ */
 export class Memory extends IFaculty implements IMemoryFaculty {
     public brain_state: BrainState;
     public language_faculty: Language;
@@ -33,6 +37,10 @@ export class Memory extends IFaculty implements IMemoryFaculty {
 
     public override get state(): BrainState {
         return this.brain_state;
+    }
+
+    private async load() {
+        // TODO: implement a loading function for the json
     }
 
     /**

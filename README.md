@@ -43,6 +43,8 @@ The agent supports various "Thinking Shapes" which define the model and reasonin
 *   **`STANDARD`** (`gemini-3-flash-preview`): Balanced performance. Good for general drafting and structure.
 *   **`FAST`** (`gemini-2.5-flash`): Optimized for speed. Best for quick validation or simple data processing. *Does not support Chain of Thought.*
 
+
+
 ### Thinking Clarity (`ThoughtClarity`)
 Controls the depth of the model's internal reasoning (Chain of Thought).
 *   **`CLEAR`** (High): Detailed, step-by-step reasoning.
@@ -106,7 +108,9 @@ bun test
 #### 2. Thought Shape Comparison (`tests/thought-shape-comparison.test.ts`)
 **Purpose:** Visualizes the qualitative difference between different models.
 *   **What it does:** Runs the *same* creative prompt ("Cyberpunk City Concept") through three different configurations:
-    1.  **FAST** (`gemini-2.5-flash`): Expect quick, direct output.
+    1.  **EXTREME** (`gemini-flash-lite`): Expect quick, direct output.
+    2.  **FASTER** (`gemini-2.5-flash`): Expect better structure and coherence.
+    3.  **FAST** (`gemini-2.5-pro`): Expect deep, nuanced, and highly creative output with extensive internal reasoning.
     2.  **STANDARD** (`gemini-3-flash-preview`): Expect better structure and coherence.
     3.  **THOUGHTFUL** (`gemini-3-pro-preview`): Expect deep, nuanced, and highly creative output with extensive internal reasoning.
 *   **How to run:**
@@ -119,5 +123,55 @@ bun test
 *   **What it does:** Verifies that the Agent, Brain, and Faculties are correctly instantiated and wired together.
 *   **Why it matters:** Prevents regressions in the core architecture (e.g., ensuring the Brain always has a Language faculty).
 
+
+# TODO
+We have to do some general architectural changes simplyfing the type differences betweeen the IAbstractSemanticData and the IReviewable interfaces. The goal is to integrate the datatypes of the program to effeciently map our LLM responses so we can give the agent the ability to think. Because the agent will have to do a lot of different tasks we will have to prompt the AI in many different ways. 
+
+The general conclusion I've arrived at is that due to the cheap costs of the gemini-flash we can use it a lot. I don't mind if we generate 10 million tokens with it over the course of a day, it'll still be cheaper than a coffee. So it makes a lot of sense then use the flash-lite model with many different worker modules (more CPU core usage) and let it make the brunt of the agent's latent thought. 
+
+When playing around in the google ai studio I've discovered that by setting the system instructions to force the agent to behave abstractly you can get it to replicate the mental process.
+
+For example we can let the agent think they are the abstract concept of coherence or understanding and then they will take a random string of texts and bring out a coherent narrative.
+
+For finding goals, or making claims, hypothesis, and topics, because they are opinionated, we must always due the problems with the AI taking up the role of a human. Otherwise they can never select the accurate goals.
+
+We can use the flash-lite model to generate thousands of goals rated with the lite models every 100 goals and with the pro model every 400 goals. The numbers can be tuned at a later date.
+
+The flash-lite model can also generate the micro variations in system instructions or persona's that can drive the metal state of the agent. The agent will always have a detailed description of their past, and their current and will use it to set up their own goals.
+
+We must then create a programmatic interface the LLM can use to actually execute its goals. For example, if one of its goals is to take some media and process it there should be a way for that to actually happen. Likewise, if the AI wants to go on to generate something, there should be a way to get it done. So we can get the goals, plans, or anything else because they are perdictable and can be extracted easily. All we need to do is program the loop. We can program a specific pattern of actions for creating goals, executing on it, and between each we are putting loops in for forming and testing hypothesises and organizing with topics. 
+
+We should find a way to manage the agent context, and its memory context, grabbing the historical DB memory to generate the most relevant semantic description of its memory for the SemanticState. 
+
+The pipeline from Meta Goal into finished goal is explained in an example:
+
+( OPERATOR DEFINED META GOAL )
+Metagoal: "I want you to create the script for my video essay on the Queen's Gambit. I want to focus on the psychological allegory aspect."
+
+The ai will then process that meta goal and create a set of *"AXIOMS"* which are injected into every context of language generation, along with the meta goal of course.
+
+The ai then checks the media folders and in this case the OPERATOR has chosen for only the @resarch/final folder to be used. The ai will then parse all the data to create a semantic map of it. It will link diverse types of data, but always notes what it is so the AI can understand it (will come in useful when trying to force evidence for claims). A single large PDF or text essay can be parsed into thousands of nodes, but it's fine because the flash-lite model is so cheap. 
+
+The nodes must be modular in the sense that they are their ideas are self-contained and can be used in any order. These nodes are what we make embeddings on, and if the embeddings are tiny atomic pieces we can modularly search for the most relevant meaning while also storing the orignal text and its exact context and not needing to load it all for the model to understand. This is the key to making the agent's memory efficient and effective.
+
+It then runs a loop of generating abstract goals (what, where, why, how) and then concrete goals (specific actions to take) expressed as string. Program extracts it and uses the same models to expand on the goals, and we do this recursively for at least a couple passes. For now we wil let it happen N number of times which is static, but I'm sensing that there is a way to set up for optimization. I mean there was this nagging itch that told me I will eventually have to implement an optimization function for all the semantic data, but I'm not sure if it's needed yet.
+
+The refined goals are then used to generate a plan, which is a list of steps to take to achieve the goals. The plan is then executed by the agent, and the results are used to update the agent's memory.
+
+With each recursive path we have a review checking cycle that fits the response of the plan to the actual capabilities the model can execute on, therefore modifying the next recursive path to be more accurate and efficient. We always assume that the mind operates on the most efficient mode until needed. This means that if not needed, the model will be in extreme fast thought without thinking. But can upgrade it's own thinking whenever needed, which is decided by the model itself. If the model is stuck producing bad plans or goals, there will be some pressure built over time that causes the thinking to flip.
+
+We can let the agent keep track of its own pressure and thinking mode. It would have to track the quality of all of its outputs compared against the goals it was given, so it can only track the quality of outputs that are trying to achieve some goal (don't track the quality of text genearated like in the coherent narrative example, that's just a side effect of the process but a welcomed one).
+
+Some of the review functions need to be high quality thinking all the time so we can accurately decide but otherwise we will use base settings. 
+
+The end result is an agent which tries to achieve a meta goal, under the framework that is restricted by the program, and creates thousands of goals, and plans which are filtered and refined, with the best ones chosen and executed on. Creating the script that we can use will be a different process entirely. 
+
+For now I want to focus the agent's abiity to produce coherent text, that numbers into the tens of thousands of words. To hold that in it's memory and working space so that it can create a unique synthesis of ideas.
+
+
+## Memory Class
+
+**TODO**: Implement vector database and solidfy definitions regarding embeddings and string data. We will store both. The vector embeddings will be used to search for data to load effectivly and cheaply. So we will hold a vector embeddings of the tags or other crucial identifying data and store that in the DB to index and load. We can also implement a psuedo "short term" memory which just uses google's GenAI embedding methods for search.
+
 ---
-*Built with ❤️ by the Advanced Agentic Coding Team*
+*Documentation created with the help of AI*
